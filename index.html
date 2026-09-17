@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Go - Book Hotels, Rooms & Guest House</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: 'var(--primary-color, #ef4444)',
+                        secondary: 'var(--secondary-color, #f97316)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --primary-color: #ef4444;
+            --secondary-color: #f97316;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="pb-20">
+
+    <!-- Top Header -->
+    <header class="flex items-center justify-between p-4 bg-white shadow-sm sticky top-0 z-50">
+        <div class="flex items-center space-x-3 cursor-pointer" id="logoContainer" title="Click 5 times for Admin Panel">
+            <img id="appLogo" src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=100" alt="Logo" class="w-12 h-12 rounded-2xl object-cover border-2 border-primary shadow-md">
+            <div>
+                <h1 id="appName" class="text-xl font-bold tracking-wide text-gray-900">Hotel Go</h1>
+                <p class="text-xs text-gray-500">Hotels • Rooms • Stays</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2">
+            <!-- Install PWA Button -->
+            <button onclick="installPWA()" class="flex items-center space-x-1 bg-gradient-to-r from-red-500 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-semibold shadow-md active:scale-95 transition">
+                <i class="fa-solid fa-download"></i>
+                <span>Install</span>
+            </button>
+            <!-- Dynamic Theme Changer -->
+            <button onclick="openThemePicker()" class="p-2 bg-orange-100 text-orange-600 rounded-full shadow-inner hover:bg-orange-200 transition">
+                <i class="fa-solid fa-palette"></i>
+            </button>
+            <!-- Sound/Audio Toggle -->
+            <button onclick="toggleAudio()" class="p-2 bg-blue-100 text-blue-600 rounded-full shadow-inner hover:bg-blue-200 transition">
+                <i class="fa-solid fa-volume-high" id="soundIcon"></i>
+            </button>
+            <!-- Hotel Portal Link -->
+            <button onclick="openHotelDashboard()" class="flex items-center space-x-1 bg-red-100 text-red-600 px-3 py-1.5 rounded-full text-xs font-semibold">
+                <i class="fa-solid fa-hotel"></i>
+                <span>Hotel</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-md mx-auto p-4 space-y-5">
+
+        <!-- Hero Search Section (Matching Screenshot) -->
+        <div class="relative rounded-3xl overflow-hidden shadow-xl p-6 text-white bg-cover bg-center" style="background-image: linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600');">
+            <span class="text-xs font-semibold tracking-wider uppercase text-yellow-300">Find Your Perfect Stay</span>
+            <h2 class="text-2xl font-bold mt-1 leading-tight">Book Hotels, Rooms & Guest House</h2>
+            <p class="text-xs text-gray-200 mt-1">Comfort • Safety • Best Price</p>
+
+            <!-- Search Bar Box -->
+            <div class="mt-4 bg-white rounded-2xl p-2 flex items-center shadow-lg text-gray-800">
+                <i class="fa-solid fa-location-dot text-red-500 ml-3 text-lg"></i>
+                <input type="text" id="searchInput" placeholder="Search city, area, or hotel..." class="w-full px-3 py-2 text-sm focus:outline-none bg-transparent">
+                <button onclick="useCurrentGPS()" class="flex items-center space-x-1 text-xs text-blue-600 font-medium px-2 py-1 bg-blue-50 rounded-lg hover:bg-blue-100 whitespace-nowrap">
+                    <i class="fa-solid fa-crosshairs"></i>
+                    <span>GPS</span>
+                </button>
+                <button onclick="performSearch()" class="bg-red-600 text-white p-3 rounded-xl ml-2 shadow-md hover:bg-red-700 transition">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Categories Grid (Hotel, Guest House, PG Male, PG Female) -->
+        <div class="grid grid-cols-2 gap-3">
+            <div onclick="filterCategory('Hotel')" class="bg-white p-4 rounded-2xl shadow-sm flex items-center justify-between border border-gray-100 hover:border-red-400 cursor-pointer transition">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-red-100 text-red-500 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-hotel"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-gray-800">Hotel</h4>
+                        <p class="text-[10px] text-gray-400">Luxury & Budget</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-300 text-xs"></i>
+            </div>
+
+            <div onclick="filterCategory('Guest House')" class="bg-white p-4 rounded-2xl shadow-sm flex items-center justify-between border border-gray-100 hover:border-green-400 cursor-pointer transition">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-green-100 text-green-500 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-house-chimney"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-gray-800">Guest House</h4>
+                        <p class="text-[10px] text-gray-400">Comfortable Stay</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-300 text-xs"></i>
+            </div>
+
+            <div onclick="filterCategory('PG Male')" class="bg-white p-4 rounded-2xl shadow-sm flex items-center justify-between border border-gray-100 hover:border-blue-400 cursor-pointer transition">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-500 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-mars"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-gray-800">PG (Male)</h4>
+                        <p class="text-[10px] text-gray-400">Safe & Affordable</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-300 text-xs"></i>
+            </div>
+
+            <div onclick="filterCategory('PG Female')" class="bg-white p-4 rounded-2xl shadow-sm flex items-center justify-between border border-gray-100 hover:border-purple-400 cursor-pointer transition">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-500 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-venus"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-gray-800">PG (Female)</h4>
+                        <p class="text-[10px] text-gray-400">Secure & Friendly</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-gray-300 text-xs"></i>
+            </div>
+        </div>
+
+        <!-- Exclusive Offer Banner (Dhamaaka Offer) -->
+        <div class="rounded-3xl p-5 text-white bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 shadow-lg relative overflow-hidden flex items-center justify-between">
+            <div>
+                <div class="flex items-center space-x-1 text-yellow-200 text-xs font-bold uppercase tracking-wider">
+                    <i class="fa-solid fa-crown"></i>
+                    <span>Hotel Go Special</span>
+                </div>
+                <h3 class="text-lg font-bold mt-1">Exclusive hotel offers</h3>
+                <p class="text-xs text-white/90 mt-0.5">Get the best deals & discounts on your next stay.</p>
+                <button onclick="viewOffers()" class="mt-3 bg-white text-orange-600 px-4 py-1.5 rounded-full text-xs font-bold shadow-md hover:bg-gray-100 transition">
+                    View Offers <i class="fa-solid fa-arrow-right ml-1"></i>
+                </button>
+            </div>
+            <div class="text-6xl text-white/20 font-black">
+                <i class="fa-solid fa-percent"></i>
+            </div>
+        </div>
+
+        <!-- Featured Hotels Section -->
+        <div>
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="font-bold text-base text-gray-800">Featured Hotels <span class="text-red-500">(12)</span></h3>
+                <button onclick="openFilters()" class="flex items-center space-x-1 bg-white border border-gray-200 px-3 py-1.5 rounded-full text-xs font-medium text-gray-700 shadow-sm">
+                    <i class="fa-solid fa-sliders text-red-500"></i>
+                    <span>Filters</span>
+                </button>
+            </div>
+            <p class="text-xs text-gray-400 -mt-2 mb-3">Top rated hotels near you</p>
+
+            <!-- Hotel Cards Grid -->
+            <div class="grid grid-cols-1 gap-4" id="hotelListContainer">
+                <!-- Hotel Card 1 -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                    <div class="relative h-44">
+                        <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600" class="w-full h-full object-cover" alt="Hotel">
+                        <div class="absolute top-3 left-3 bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center space-x-1 shadow">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Verified</span>
+                        </div>
+                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-yellow-400 text-xs font-bold px-2 py-1 rounded-full flex items-center space-x-1 shadow">
+                            <i class="fa-solid fa-star"></i>
+                            <span>4.5</span>
+                        </div>
+                        <div class="absolute bottom-3 right-3 bg-black/50 text-white p-2 rounded-xl text-xs">
+                            <i class="fa-solid fa-video"></i>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-base text-gray-900">Grand View Hotel</h4>
+                        <p class="text-xs text-gray-500 flex items-center mt-0.5">
+                            <i class="fa-solid fa-location-dot text-red-500 mr-1"></i> Kolkata, West Bengal
+                        </p>
+                        <div class="flex items-center space-x-3 text-[11px] text-gray-500 mt-2">
+                            <span><i class="fa-solid fa-bed mr-1 text-gray-400"></i> Deluxe Room</span>
+                            <span><i class="fa-solid fa-wifi mr-1 text-gray-400"></i> Free WiFi</span>
+                            <span><i class="fa-solid fa-utensils mr-1 text-gray-400"></i> Breakfast</span>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                            <div>
+                                <span class="text-lg font-bold text-red-600">₹1,999</span>
+                                <span class="text-xs text-gray-400 line-through ml-1">₹2,499</span>
+                                <span class="bg-red-100 text-red-600 text-[10px] font-bold px-1.5 py-0.5 rounded ml-1">20% OFF</span>
+                            </div>
+                            <button onclick="bookHotel('Grand View Hotel', '1999')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow transition">
+                                View
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hotel Card 2 -->
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
+                    <div class="relative h-44">
+                        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600" class="w-full h-full object-cover" alt="Hotel">
+                        <div class="absolute top-3 left-3 bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center space-x-1 shadow">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Verified</span>
+                        </div>
+                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-yellow-400 text-xs font-bold px-2 py-1 rounded-full flex items-center space-x-1 shadow">
+                            <i class="fa-solid fa-star"></i>
+                            <span>4.8</span>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h4 class="font-bold text-base text-gray-900">Sunrise Resort</h4>
+                        <p class="text-xs text-gray-500 flex items-center mt-0.5">
+                            <i class="fa-solid fa-location-dot text-red-500 mr-1"></i> New Town, Kolkata
+                        </p>
+                        <div class="flex items-center space-x-3 text-[11px] text-gray-500 mt-2">
+                            <span><i class="fa-solid fa-door-open mr-1 text-gray-400"></i> AC Rooms</span>
+                            <span><i class="fa-solid fa-wifi mr-1 text-gray-400"></i> Free WiFi</span>
+                            <span><i class="fa-solid fa-utensils mr-1 text-gray-400"></i> Food Included</span>
+                        </div>
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                            <div>
+                                <span class="text-lg font-bold text-red-600">₹2,999</span>
+                                <span class="text-xs text-gray-400 line-through ml-1">₹3,999</span>
+                                <span class="bg-red-100 text-red-600 text-[10px] font-bold px-1.5 py-0.5 rounded ml-1">25% OFF</span>
+                            </div>
+                            <button onclick="bookHotel('Sunrise Resort', '2999')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow transition">
+                                View
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 px-6 py-2 flex justify-between items-center z-50 shadow-lg">
+        <a href="#" class="flex flex-col items-center text-red-600">
+            <i class="fa-solid fa-compass text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Explore</span>
+        </a>
+        <a href="#" onclick="openMap()" class="flex flex-col items-center text-gray-400 hover:text-red-500">
+            <i class="fa-solid fa-map text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Map</span>
+        </a>
+        <a href="#" onclick="openHotelDashboard()" class="flex flex-col items-center text-gray-400 hover:text-red-500">
+            <i class="fa-solid fa-hotel text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Hotel</span>
+        </a>
+        <a href="#" onclick="openSupport()" class="flex flex-col items-center text-gray-400 hover:text-red-500">
+            <i class="fa-solid fa-headset text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Support</span>
+        </a>
+    </nav>
+
+    <!-- Hidden Admin Panel Modal / Secret Trigger Logic -->
+    <div id="adminModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl relative">
+            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="text-center">
+                <div class="w-12 h-12 bg-red-100 text-red-600 rounded-2xl mx-auto flex items-center justify-center text-xl mb-3">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900">Hidden Admin Panel</h3>
+                <p class="text-xs text-gray-500 mt-1">Enter password to unlock system control</p>
+            </div>
+            <div class="mt-4 space-y-3">
+                <input type="password" id="adminPassInput" placeholder="Enter Admin Password" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-red-500">
+                <button onclick="verifyAdminPassword()" class="w-full bg-red-600 text-white font-bold py-2.5 rounded-xl text-sm shadow-md hover:bg-red-700 transition">Unlock Admin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theme Picker Modal -->
+    <div id="themeModal" class="fixed inset-0 bg-black/70 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl relative">
+            <button onclick="closeThemeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-lg font-bold text-gray-900 mb-1">Dynamic Color Theme</h3>
+            <p class="text-xs text-gray-500 mb-4">Pick a theme to instantly change the website colors.</p>
+            <div class="grid grid-cols-3 gap-3">
+                <button onclick="changeTheme('#ef4444', '#f97316')" class="p-3 bg-red-500 text-white rounded-2xl font-bold text-xs shadow">Red / Orange</button>
+                <button onclick="changeTheme('#3b82f6', '#1d4ed8')" class="p-3 bg-blue-500 text-white rounded-2xl font-bold text-xs shadow">Royal Blue</button>
+                <button onclick="changeTheme('#10b981', '#059669')" class="p-3 bg-emerald-500 text-white rounded-2xl font-bold text-xs shadow">Emerald</button>
+                <button onclick="changeTheme('#8b5cf6', '#6d28d9')" class="p-3 bg-purple-500 text-white rounded-2xl font-bold text-xs shadow">Purple</button>
+                <button onclick="changeTheme('#ec4899', '#db2777')" class="p-3 bg-pink-500 text-white rounded-2xl font-bold text-xs shadow">Pink Rose</button>
+                <button onclick="changeTheme('#f59e0b', '#d97706')" class="p-3 bg-amber-500 text-white rounded-2xl font-bold text-xs shadow">Amber Gold</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Logo 5 Clicks Hidden Admin Trigger
+        let clickCount = 0;
+        document.getElementById('logoContainer').addEventListener('click', () => {
+            clickCount++;
+            if (clickCount === 5) {
+                clickCount = 0;
+                document.getElementById('adminModal').classList.remove('hidden');
+            }
+        });
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function verifyAdminPassword() {
+            const pass = document.getElementById('adminPassInput').value;
+            if (pass === '7876482550000') {
+                alert('Admin Access Granted Successfully!');
+                closeAdminModal();
+                // Open full admin control panel logic here
+            } else {
+                alert('Incorrect Admin Password!');
+            }
+        }
+
+        // Dynamic Theme Switcher Engine
+        function openThemePicker() {
+            document.getElementById('themeModal').classList.remove('hidden');
+        }
+        function closeThemeModal() {
+            document.getElementById('themeModal').classList.add('hidden');
+        }
+        function changeTheme(primary, secondary) {
+            document.documentElement.style.setProperty('--primary-color', primary);
+            document.documentElement.style.setProperty('--secondary-color', secondary);
+            closeThemeModal();
+        }
+
+        // GPS Location Fetcher
+        function useCurrentGPS() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    document.getElementById('searchInput').value = `GPS: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+                    alert('Current GPS Location Fetched Successfully!');
+                }, () => {
+                    alert('Unable to retrieve your location. Please use manual search.');
+                });
+            } else {
+                alert('Geolocation is not supported by your browser.');
+            }
+        }
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value;
+            if(!query) {
+                alert('Please enter a location or hotel name to search.');
+                return;
+            }
+            alert(`Searching hotels near: ${query}`);
+        }
+
+        function filterCategory(category) {
+            alert(`Filtering by category: ${category}`);
+        }
+
+        function viewOffers() {
+            alert('Opening Dhamaaka Exclusive Hotel Offers & Discounts!');
+        }
+
+        function openFilters() {
+            alert('Opening Advanced Filter Options (Stars, Price Range, Amenities)');
+        }
+
+        function bookHotel(hotelName, price) {
+            alert(`Booking initiated for ${hotelName} at ₹${price}. Order sent to Hotel Dashboard in Real-Time!`);
+        }
+
+        function openMap() {
+            alert('Opening Map & GPS Navigation view.');
+        }
+
+        function openHotelDashboard() {
+            alert('Redirecting to Hotel Dashboard (Requires 4-digit ID and PIN).');
+        }
+
+        function openSupport() {
+            alert('Contacting Hotel Go Agent & Customer Support.');
+        }
+
+        function installPWA() {
+            alert('PWA Install Triggered! You can now add this web app to your mobile home screen.');
+        }
+
+        let soundOn = true;
+        function toggleAudio() {
+            soundOn = !soundOn;
+            const icon = document.getElementById('soundIcon');
+            if(soundOn) {
+                icon.className = "fa-solid fa-volume-high";
+                alert('Sound Enabled');
+            } else {
+                icon.className = "fa-solid fa-volume-xmark";
+                alert('Sound Muted');
+            }
+        }
+    </script>
+</body>
+</html>
